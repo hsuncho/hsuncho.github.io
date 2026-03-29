@@ -364,7 +364,6 @@
       <div class="section-card">
         <div class="section-head">
           <h2>프로젝트 개요</h2>
-          <p>무엇을 만들었고, 왜 만들었는지 먼저 이해되도록 정리했습니다.</p>
         </div>
         <ul class="key-list">
           <li>학생이 역사 학습 중 AI와 대화하며 질문하고 답을 얻을 수 있는 디지털 교과서 서비스</li>
@@ -377,59 +376,7 @@
     <section>
       <div class="section-card">
         <div class="section-head">
-          <h2>기술 스택과 선택 이유</h2>
-          <p>기술 이름만 나열하지 않고 왜 사용했는지 바로 읽히게 구성했습니다.</p>
-        </div>
-        <div class="stack-grid">
-          <div class="stack-item">
-            <strong>Spring Boot</strong>
-            인증, 사용자 요청 처리, API 중심 구조 설계에 적합해 메인 백엔드로 사용했습니다.
-          </div>
-          <div class="stack-item">
-            <strong>Django</strong>
-            AI 기능을 분리하고 AWS Bedrock 연동 로직을 관리하기에 적합했습니다.
-          </div>
-          <div class="stack-item">
-            <strong>WebSocket</strong>
-            사용자 간 실시간 채팅과 즉시성 있는 상호작용 구현에 필요했습니다.
-          </div>
-          <div class="stack-item">
-            <strong>Redis</strong>
-            캐싱과 실시간 데이터 처리 성능 개선을 위해 사용했습니다.
-          </div>
-          <div class="stack-item">
-            <strong>AWS Bedrock</strong>
-            Claude 기반 LLM 응답 기능을 연결하기 위해 활용했습니다.
-          </div>
-          <div class="stack-item">
-            <strong>PostgreSQL</strong>
-            관계형 데이터 모델링과 서비스 데이터 관리에 적합했습니다.
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section>
-      <div class="section-card">
-        <div class="section-head">
-          <h2>내가 구현한 내용</h2>
-          <p>채용 담당자가 빠르게 읽을 수 있게 역할 중심으로 정리했습니다.</p>
-        </div>
-        <ul class="detail-list">
-          <li>Spring Boot, Django 기반 백엔드 API 설계 및 서비스 로직 구현</li>
-          <li>Spring Security 기반 JWT 인증 처리 및 API 접근 제어 구현</li>
-          <li>PostgreSQL 기반 데이터 모델링 및 Redis 캐시 적용</li>
-          <li>WebSocket 기반 실시간 채팅 기능 구현</li>
-          <li>AWS Bedrock 기반 LLM 응답 처리 로직 구현 및 Prompt Engineering 수행</li>
-        </ul>
-      </div>
-    </section>
-
-    <section>
-      <div class="section-card">
-        <div class="section-head">
           <h2>핵심 기능</h2>
-          <p>서비스 관점에서 무엇이 보이는지 중심으로 요약했습니다.</p>
         </div>
         <ul class="detail-list">
           <li><strong>인증 및 권한 처리</strong> · JWT 기반 로그인과 사용자 요청 제어</li>
@@ -441,28 +388,216 @@
     </section>
 
     <section>
+      <div class="section-card">
+        <div class="section-head">
+          <h2>프로젝트 시연 영상</h2>
+        </div>
+
+        <video controls style="width:100%; border-radius:18px;">
+          <source src="videos/demo.mp4" type="video/mp4">
+          브라우저가 영상을 지원하지 않습니다.
+        </video>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-card">
+        <div class="section-head">
+          <h2>시스템 아키텍처</h2>
+        </div>
+
+        <div style="margin-bottom:10px; font-size:0.9rem; color:var(--muted);">
+          - VPC 기반 네트워크 분리 및 보안 구조<br>
+          - Public / Private Subnet을 통한 서비스와 DB 분리<br>
+          - Auto Scaling 기반 확장 가능한 구조<br><br>
+          → 해당 구조를 기반으로 백엔드 API 및 인증/실시간 기능을 구현했습니다.
+        </div>
+
+        <div style="
+          position: relative;
+          width: 100%;
+          aspect-ratio: 1279 / 720;
+          border-radius: 18px;
+          overflow: hidden;
+          border: 1px solid var(--line);
+          background: #fff;
+        ">
+          <img
+            src="images/architecture.png"
+            alt="System Architecture"
+            style="
+              width: 100%;
+              height: 100%;
+              object-fit: contain;
+              display: block;
+            "
+          >
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-card">
+        <div class="section-head">
+          <h2>기술 스택</h2>
+        </div>
+
+        <div class="stack-grid">
+
+          <div class="stack-item">
+            <strong>Backend</strong>
+            Spring Boot, Django<br>
+            <span style="color:var(--muted); font-size:0.9rem;">
+              → API 서버 구성 및 AI 서비스 분리
+            </span>
+          </div>
+
+          <div class="stack-item">
+            <strong>Authentication</strong>
+            Spring Security, JWT<br>
+            <span style="color:var(--muted); font-size:0.9rem;">
+              → 사용자 인증 및 권한 관리
+            </span>
+          </div>
+
+          <div class="stack-item">
+            <strong>Real-time</strong>
+            WebSocket, STOMP<br>
+            <span style="color:var(--muted); font-size:0.9rem;">
+              → 실시간 채팅 및 토론 기능 구현
+            </span>
+          </div>
+
+          <div class="stack-item">
+            <strong>AI / LLM</strong>
+            AWS Bedrock, Claude, RAG<br>
+            <span style="color:var(--muted); font-size:0.9rem;">
+              → AI 응답 생성 및 교과서 기반 질의응답
+            </span>
+          </div>
+
+          <div class="stack-item">
+            <strong>Database</strong>
+            PostgreSQL, Redis<br>
+            <span style="color:var(--muted); font-size:0.9rem;">
+              → 데이터 관리 및 캐싱 기반 성능 개선
+            </span>
+          </div>
+
+          <div class="stack-item">
+            <strong>Visualization</strong>
+            Leaflet, GeoJSON<br>
+            <span style="color:var(--muted); font-size:0.9rem;">
+              → 지도 기반 역사 데이터 시각화
+            </span>
+          </div>
+
+          <div class="stack-item">
+            <strong>Infra</strong>
+            AWS ECS, S3, Docker<br>
+            <span style="color:var(--muted); font-size:0.9rem;">
+              → 서비스 배포 및 운영 환경 구성
+            </span>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-card">
+        <div class="section-head">
+          <h2>기여한 부분</h2>
+        </div>
+        <ul class="detail-list">
+          <li>백엔드 팀장으로서 백엔드 개발 방향 논의, 기능 우선순위 조율 및 협업 진행</li>
+          <li>Spring Boot, Django 기반 백엔드 API 설계 및 서비스 로직 구현</li>
+          <li>JWT 인증 처리 및 API 접근 제어 구현</li>
+          <li>PostgreSQL 기반 데이터 모델링 및 Redis 캐시 적용</li>
+          <li>WebSocket 기반 실시간 채팅 기능 구현 및 채팅 내 욕설 필터링 기능 적용</li>
+          <li>STT 기능과 AWS Bedrock 기반 LLM 응답 처리 로직 구현</li>
+          <li>Prompt Engineering을 통해 응답 형식과 품질 개선</li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
       <div class="section-head">
         <h2>트러블슈팅</h2>
-        <p>문제 → 원인 → 해결 → 결과 흐름이 바로 보이도록 분리했습니다.</p>
       </div>
       <div class="trouble-grid">
         <article class="trouble-card">
-          <h3>1. WebSocket 환경에서 JWT 인증이 적용되지 않던 문제</h3>
+          <h3>1. WebSocket(STOMP) 환경에서 JWT 인증 정보 유지 및 사용자 식별 문제</h3>
           <div class="problem-flow">
-            <div><strong>문제</strong><br>WebSocket 환경에서 JWT 인증이 적용되지 않아 사용자 식별이 되지 않았습니다.</div>
-            <div><strong>원인</strong><br>STOMP 통신은 일반적인 Spring Security JWT 필터 체인이 그대로 적용되지 않아 인증 정보가 유지되지 않았습니다.</div>
-            <div><strong>해결</strong><br>CONNECT 단계에서 토큰을 검증하고 세션에 사용자 정보를 저장하는 방식으로 인증 흐름을 분리했습니다.</div>
-            <div><strong>결과</strong><br>사용자 식별과 권한 기반 메시지 처리가 안정적으로 동작하도록 개선했습니다.</div>
+            
+            <div>
+              <strong>문제</strong><br>
+              실시간 토론 기능 구현 중 WebSocket(STOMP) 연결 내에서 JWT 인증 정보가 연동되지 않아 
+              `headerAccessor.getUser()`가 `null`이 되는 문제가 발생했습니다. 
+              이로 인해 사용자 식별 및 권한 검증이 불가능했습니다.
+            </div>
+
+            <div>
+              <strong>원인</strong><br>
+              WebSocket은 HTTP Handshake 이후 별도의 프로토콜로 동작하여 
+              Spring Security의 JWT 필터 체인이 적용되지 않습니다. 
+              또한 SockJS 환경에서는 CONNECT 이후 메시지 프레임에서도 
+              인증 정보가 자동으로 유지되지 않았습니다.
+            </div>
+
+            <div>
+              <strong>해결</strong><br>
+              `ChannelInterceptor` 기반 <strong>StompAuthChannelInterceptor</strong>를 도입했습니다.<br>
+              1) <strong>Handshake 단계:</strong> URL 파라미터의 토큰을 세션에 저장<br>
+              2) <strong>CONNECT 단계:</strong> Header 또는 세션에서 토큰을 추출·검증 후 Principal 설정<br>
+              3) <strong>이후 프레임:</strong> 세션의 인증 정보를 복원하여 사용자 컨텍스트 유지
+            </div>
+
+            <div>
+              <strong>결과</strong><br>
+              WebSocket 환경에서도 일관된 사용자 인증 체계를 구축했습니다.<br>
+              이를 통해 토론방 입장, 상태 변경, 메시지 전송 전 과정에서 
+              권한 기반 로직을 안정적으로 적용할 수 있었습니다.
+            </div>
+
           </div>
         </article>
 
         <article class="trouble-card">
-          <h3>2. LLM 응답 형식과 품질이 일정하지 않던 문제</h3>
+          <h3>2. ElastiCache TLS 설정 불일치로 인한 Redis Timeout 및 서비스 중단 문제</h3>
           <div class="problem-flow">
-            <div><strong>문제</strong><br>토론 요약 기능에서 LLM 응답 형식과 품질이 일정하지 않아 학습 서비스로 활용하기 어려웠습니다.</div>
-            <div><strong>원인</strong><br>프롬프트 구조가 명확하지 않아 응답 길이, 형식, 관점이 일관되지 않았습니다.</div>
-            <div><strong>해결</strong><br>역할 지정, 출력 형식 제한, 질문 구조화를 적용해 프롬프트를 반복적으로 개선했습니다.</div>
-            <div><strong>결과</strong><br>응답 일관성과 활용도를 높였고, 실제 시연 피드백도 반영할 수 있었습니다.</div>
+
+            <div>
+              <strong>문제</strong><br>
+              배포 후 Django 기반 AI 기능이 정상 동작하지 않으며 서비스가 중단되었습니다. 
+              Redis 연결 시 타임아웃이 발생했지만, 즉시 예외가 발생하지 않고 로그가 남지 않아 
+              원인 파악이 어려운 상황이었습니다.
+            </div>
+
+            <div>
+              <strong>원인</strong><br>
+              AWS ElastiCache의 전송 중 암호화(TLS) 옵션이 활성화되어 있었으나, 
+              애플리케이션에서는 평문 Redis 연결을 사용하고 있었습니다. 
+              이로 인해 TCP 연결은 정상적으로 이루어졌지만, 실제 Redis 요청에서는 응답을 받지 못해 
+              timeout이 발생했습니다.
+            </div>
+
+            <div>
+              <strong>해결</strong><br>
+              ECS 컨테이너 내부에서 직접 테스트를 수행했습니다.<br>
+              1) TCP 연결은 정상임을 확인하여 네트워크 문제를 배제했습니다.<br>
+              2) Redis ping 테스트에서만 timeout이 발생하는 점을 통해 TLS 미적용 문제를 원인으로 특정했습니다.<br>
+              3) Redis 연결을 rediss:// 기반으로 변경하고, Redis.from_url()을 사용해 
+              환경별 설정을 통합했습니다.
+            </div>
+
+            <div>
+              <strong>결과</strong><br>
+              Redis 연결 문제를 해결하여 서비스 중단 현상을 복구했습니다. 
+              또한 타임아웃 설정을 명시적으로 추가해 예외가 즉시 기록되도록 개선하고, 
+              로컬/운영 환경을 모두 지원하는 구조로 정리해 재발 방지 기반을 마련했습니다.
+            </div>
+
           </div>
         </article>
       </div>
@@ -472,12 +607,12 @@
       <div class="section-card">
         <div class="section-head">
           <h2>사용자 피드백과 협업</h2>
-          <p>기술 구현뿐 아니라 사용자 관점과 팀 협업 경험도 함께 드러나게 했습니다.</p>
         </div>
         <ul class="detail-list">
-          <li>학생, 교사, 교육학 교수 대상 서비스 시연 후 피드백을 반영해 응답 표현과 사용 흐름을 보완했습니다.</li>
-          <li>Agile 기반 스프린트 단위로 개발을 진행하며 기능 우선순위와 일정 조율에 참여했습니다.</li>
-          <li>GitHub 이슈 관리와 기술 논의를 통해 백엔드 중심 협업을 수행했습니다.</li>
+          <li>학생, 교사, 교육학 교수 대상 서비스 시연 후 피드백을 반영해 AI 응답 표현과 사용자 흐름을 개선했습니다.</li>
+          <li>GitHub Projects(칸반 보드)를 활용해 Sprint 기반으로 작업을 계획하고, 작업 상태를 시각적으로 관리했습니다.</li>
+          <li>Sub-issue 기반으로 기능을 세분화하여 작업 단위를 명확히 하고, 역할 중심 협업을 수행했습니다.</li>
+          <li>WBS 기반 일정 관리와 진행률을 지속적으로 점검하며 우선순위 중심으로 작업을 조율했습니다.</li>
         </ul>
       </div>
     </section>
@@ -486,7 +621,6 @@
       <div class="section-card">
         <div class="section-head">
           <h2>회고</h2>
-          <p>프로젝트를 통해 얻은 성장 포인트를 한 문단으로 정리했습니다.</p>
         </div>
         <p style="margin:0; color:#364152;">
           H.AI 프로젝트를 통해 인증, 실시간 통신, 캐싱, AI 연동을 하나의 서비스 안에서 통합적으로 다루는 경험을 했습니다.
@@ -497,10 +631,11 @@
 
     <div class="footer-card">
       <div>
-        <strong style="display:block; margin-bottom:6px; font-size:1.05rem;">프로젝트 링크</strong>
-        <span style="color: var(--muted);">프로젝트 저장소를 바로 확인할 수 있도록 하단 액션을 정리했습니다.</span>
+        <strong style="display:block; margin-bottom:6px; font-size:1.05rem;">Project Repository</strong>
       </div>
-      <a class="button" href="https://github.com/lgcns2team/projectdoc" target="_blank" rel="noopener noreferrer">GitHub 보기</a>
+      <a class="button" href="https://github.com/lgcns2team/projectdoc_new" target="_blank" rel="noopener noreferrer">
+        GitHub 보기
+      </a>
     </div>
   </main>
 
