@@ -410,21 +410,6 @@
           <span class="pill">백엔드 중심 참여</span>
         </div>
       </div>
-
-      <div class="info-grid">
-        <div>
-          <span class="label">핵심 역할</span>
-          <div class="value">백엔드 API 구현 및 실시간 기능 개발</div>
-        </div>
-        <div>
-          <span class="label">핵심 기술</span>
-          <div class="value">Django · Redis · Socket.IO · Node.js</div>
-        </div>
-        <div>
-          <span class="label">포인트</span>
-          <div class="value">사용자 선호 기반 헌혈 매칭과 실시간 상호작용</div>
-        </div>
-      </div>
     </section>
 
     <section>
@@ -550,65 +535,80 @@
         <h2>트러블슈팅</h2>
       </div>
       <div class="trouble-grid">
-
         <section class="trouble-section">
+          <article class="trouble-card">
+            <h3>1. WebSocket 환경에서 세션 기반 사용자 인증 동기화 문제</h3>
+            <div class="problem-flow">
+              <div>
+                <strong>문제</strong><br>
+                <ul>
+                  <li>WebSocket 연결 시 브라우저 로그인 세션이 함께 전달되지 않아 서버에서 사용자 식별 불가</li>
+                  <li>별도의 session_key를 클라이언트에서 전달받는 방식에 의존 → 조작 가능성 존재</li>
+                </ul>
+              </div>
+              <div>
+                <strong>원인</strong><br>
+                <ul>
+                  <li>WebSocket은 HTTP와 다른 방식으로 동작하여 기존 세션 인증 흐름이 자동으로 적용되지 않음</li>
+                  <li>CORS 환경에서 credential 설정이 맞지 않으면 쿠키가 전달되지 않음</li>
+                </ul>
+              </div>
+              <div>
+                <strong>해결</strong><br>
+                <ul>
+                  <li>클라이언트/서버 credential 설정을 통일하여 쿠키 전달 보장</li>
+                  <li>Socket 인증 미들웨어에서 handshake header의 cookie 추출</li>
+                  <li>Django 사용자 조회 API를 통해 세션 검증</li>
+                  <li>검증된 사용자 정보를 socket.data.user에 저장하여 모든 이벤트에서 재사용</li>
+                </ul>
+              </div>
+              <div>
+                <strong>결과</strong><br>
+                <ul>
+                  <li>별도 userId/session_key 없이 서버 기준으로 사용자 식별 가능</li>
+                  <li>실제 로그인 세션과 일관된 실시간 인증 환경 구축</li>
+                  <li>클라이언트 조작 가능성 제거 및 인증 신뢰도 향상</li>
+                </ul>
+              </div>
+            </div>
+          </article>
 
-  <article class="trouble-card">
-    <h3>1. WebSocket 환경에서 세션 기반 사용자 인증 동기화 문제</h3>
-    <div class="problem-flow">
-      <div>
-        <strong>문제</strong><br>
-        실시간 채팅 구현 시 브라우저의 로그인 세션이 Socket 연결과 안정적으로 연동되지 않아,
-        서버에서 사용자를 신뢰성 있게 식별하기 어려웠고 별도의 session_key 전달에 의존하는 구조적 한계가 있었습니다.
-      </div>
-      <div>
-        <strong>원인</strong><br>
-        WebSocket 연결은 일반 HTTP 요청과 처리 방식이 달라 기존 세션 인증 흐름이 그대로 적용되지 않았습니다.
-        또한 CORS 환경에서 쿠키 전달 조건이 맞지 않으면 인증 정보가 서버에 전달되지 않는 문제가 있었습니다.
-      </div>
-      <div>
-        <strong>해결</strong><br>
-        클라이언트와 서버 양쪽에서 credential 설정을 정리하고,
-        Socket 인증 미들웨어에서 handshake header의 cookie를 읽어 Django 사용자 조회 API로 세션을 검증했습니다.
-        이후 검증된 사용자 정보를 socket.data.user에 저장해 모든 이벤트에서 동일한 인증 컨텍스트를 사용하도록 구성했습니다.
-      </div>
-      <div>
-        <strong>결과</strong><br>
-        별도의 userId 전달 없이도 서버가 인증된 사용자를 기준으로 채팅을 처리할 수 있게 되었고,
-        실제 로그인 세션과 일관된 실시간 통신 환경을 구축했습니다.
-      </div>
-    </div>
-  </article>
-
-  <article class="trouble-card">
-    <h3>2. 실시간 메시지 브로드캐스트 방식 및 이벤트 구조 개선</h3>
-    <div class="problem-flow">
-      <div>
-        <strong>문제</strong><br>
-        메시지 전송 시 발신자에게도 동일한 데이터가 다시 전달되어
-        클라이언트에서 중복 처리와 발신/수신 구분 로직이 필요했습니다.
-        또한 텍스트와 이미지 이벤트 구조가 분리되어 있어 처리 흐름이 복잡했습니다.
-      </div>
-      <div>
-        <strong>원인</strong><br>
-        io.to(roomId).emit()을 사용해 발신자를 포함한 전체 사용자에게 메시지를 전송하고 있었고,
-        이벤트 이름과 처리 방식도 메시지 유형별로 분산되어 있었습니다.
-      </div>
-      <div>
-        <strong>해결</strong><br>
-        메시지 전송 방식을 socket.broadcast.to(roomId).emit()으로 변경해 발신자를 제외한 사용자에게만 전달하도록 수정했습니다.
-        또한 이벤트 네이밍을 단순화하고 메시지 구조를 일관되게 정리해 text와 image 처리 흐름을 통일했습니다.
-      </div>
-      <div>
-        <strong>결과</strong><br>
-        클라이언트의 중복 처리 로직이 줄어 UI 구현이 단순해졌고,
-        서버 중심으로 실시간 메시지 흐름을 정리하면서 유지보수성과 확장성이 개선되었습니다.
-      </div>
-    </div>
-  </article>
-
-</section>
-
+          <article class="trouble-card">
+            <h3>2. 실시간 메시지 중복 처리 제거 및 브로드캐스트 구조 재설계</h3>
+            <div class="problem-flow">
+              <div>
+                <strong>문제</strong><br>
+                <ul>
+                  <li>메시지 전송 시 발신자에게도 동일한 데이터가 전달되어 클라이언트에서 중복 처리 발생</li>
+                  <li>발신/수신 구분 로직이 클라이언트에 분산되어 UI 복잡도 증가</li>
+                  <li>텍스트/이미지 이벤트 구조가 분리되어 메시지 처리 흐름이 일관되지 않음</li>
+                </ul>
+              </div>
+              <div>
+                <strong>원인</strong><br>
+                <ul>
+                  <li>io.to(roomId).emit() 사용으로 발신자를 포함한 전체 사용자에게 메시지 전송</li>
+                  <li>메시지 유형별로 이벤트 이름과 처리 로직이 분산된 구조</li>
+                </ul>
+              </div>
+              <div>
+                <strong>해결</strong><br>
+                <ul>
+                  <li>socket.broadcast.to(roomId).emit()으로 변경하여 발신자를 제외한 사용자에게만 전송</li>
+                  <li>메시지 이벤트를 단일 구조로 통합하여 text/image 처리 흐름 일관화</li>
+                </ul>
+              </div>
+              <div>
+                <strong>결과</strong><br>
+                <ul>
+                  <li>클라이언트 중복 처리 및 분기 로직 제거</li>
+                  <li>서버 중심으로 메시지 흐름을 통제하여 유지보수성 향상</li>
+                  <li>이벤트 구조 표준화로 기능 확장 용이</li>
+                </ul>
+              </div>
+            </div>
+          </article>
+        </section>
       </div>
     </section>
 

@@ -343,21 +343,6 @@
           <span class="pill">최종 프로젝트 대상</span>
         </div>
       </div>
-
-      <div class="info-grid">
-        <div>
-          <span class="label">핵심 역할</span>
-          <div class="value">백엔드 API 설계 및 인증/실시간 처리 구현</div>
-        </div>
-        <div>
-          <span class="label">핵심 기술</span>
-          <div class="value">Spring Boot · Django · Redis · WebSocket</div>
-        </div>
-        <div>
-          <span class="label">포인트</span>
-          <div class="value">AI 연동과 트러블슈팅 경험을 함께 보여주는 프로젝트</div>
-        </div>
-      </div>
     </section>
 
     <section>
@@ -366,9 +351,9 @@
           <h2>프로젝트 개요</h2>
         </div>
         <ul class="key-list">
-          <li>학생이 역사 학습 중 AI와 대화하며 질문하고 답을 얻을 수 있는 디지털 교과서 서비스</li>
-          <li>단순 콘텐츠 소비가 아니라 상호작용 중심 학습 경험 제공</li>
-          <li>실시간 채팅과 AI 응답을 통해 참여도와 이해도 향상 목표</li>
+          <li><strong>문제</strong>: 텍스트 중심·정적 시각자료·단방향 수업으로 인해 학습 참여도와 몰입도가 낮은 구조</li>
+          <li><strong>목표</strong>: AI와 시각적 인터랙션을 결합해 학생 참여를 유도하는 <strong>Gen AI 기반 디지털 역사 교과서</strong> 구현</li>
+          <li><strong>해결 방향</strong>: “읽는 역사”가 아닌 <strong>대화하고 탐색하는 학습 경험</strong>으로 전환</li>
         </ul>
       </div>
     </section>
@@ -402,7 +387,6 @@
             allowfullscreen>
           </iframe>
         </div>
-
       </div>
     </section>
 
@@ -411,14 +395,12 @@
         <div class="section-head">
           <h2>시스템 아키텍처</h2>
         </div>
-
         <div style="margin-bottom:10px; font-size:0.9rem; color:var(--muted);">
           - VPC 기반 네트워크 분리 및 보안 구조<br>
           - Public / Private Subnet을 통한 서비스와 DB 분리<br>
           - Auto Scaling 기반 확장 가능한 구조<br><br>
           → 해당 구조를 기반으로 백엔드 API 및 인증/실시간 기능을 구현했습니다.
         </div>
-
         <div style="
           position: relative;
           width: 100%;
@@ -447,9 +429,7 @@
         <div class="section-head">
           <h2>기술 스택</h2>
         </div>
-
         <div class="stack-grid">
-
           <div class="stack-item">
             <strong>Backend</strong>
             Spring Boot, Django<br>
@@ -505,7 +485,6 @@
               → 서비스 배포 및 운영 환경 구성
             </span>
           </div>
-
         </div>
       </div>
     </section>
@@ -533,77 +512,92 @@
       </div>
       <div class="trouble-grid">
         <article class="trouble-card">
-          <h3>1. WebSocket(STOMP) 환경에서 JWT 인증 정보 유지 및 사용자 식별 문제</h3>
+          <h3>1. WebSocket 환경에서 인증 구조 개선</h3>
           <div class="problem-flow">
-            
             <div>
               <strong>문제</strong><br>
-              실시간 토론 기능 구현 중 WebSocket(STOMP) 연결 내에서 JWT 인증 정보가 연동되지 않아 
-              `headerAccessor.getUser()`가 `null`이 되는 문제가 발생했습니다. 
-              이로 인해 사용자 식별 및 권한 검증이 불가능했습니다.
+              <ul>
+                <li>STOMP 메시지 Payload의 userId에 의존하는 구조</li>
+                <li>userId를 임의 조작할 경우 권한 도용 및 데이터 부정 접근이 가능한 보안 취약점 존재</li>
+                <li>학급·역할 기반 권한 검증 기능 특성상, 인증 신뢰가 깨지면 권한 통제 불가능</li>
+              </ul>
             </div>
 
             <div>
               <strong>원인</strong><br>
-              WebSocket은 HTTP Handshake 이후 별도의 프로토콜로 동작하여 
-              Spring Security의 JWT 필터 체인이 적용되지 않습니다. 
-              또한 SockJS 환경에서는 CONNECT 이후 메시지 프레임에서도 
-              인증 정보가 자동으로 유지되지 않았습니다.
+              <ul>
+                <li>WebSocket은 HTTP Handshake 이후 별도의 프로토콜로 동작하여 JWT 필터 체인이 적용되지 않음</li>
+                <li>STOMP 메시지 처리 과정에서는 인증 정보가 자동으로 전달·유지되지 않음</li>
+              </ul>
             </div>
 
             <div>
               <strong>해결</strong><br>
-              `ChannelInterceptor` 기반 <strong>StompAuthChannelInterceptor</strong>를 도입했습니다.<br>
-              1) <strong>Handshake 단계:</strong> URL 파라미터의 토큰을 세션에 저장<br>
-              2) <strong>CONNECT 단계:</strong> Header 또는 세션에서 토큰을 추출·검증 후 Principal 설정<br>
-              3) <strong>이후 프레임:</strong> 세션의 인증 정보를 복원하여 사용자 컨텍스트 유지
+              <ul>
+                <li>ChannelInterceptor로 CONNECT 프레임 내 토큰 검증</li>
+                <li>Authentication 객체를 생성해 Principal로 설정</li>
+                <li>세션 기반으로 이후 메시지까지 인증 유지</li>
+              </ul>
             </div>
 
             <div>
               <strong>결과</strong><br>
-              WebSocket 환경에서도 일관된 사용자 인증 체계를 구축했습니다.<br>
-              이를 통해 토론방 입장, 상태 변경, 메시지 전송 전 과정에서 
-              권한 기반 로직을 안정적으로 적용할 수 있었습니다.
+              <ul>
+                <li>클라이언트 조작 기반 사용자 위장 및 무단 접근 차단</li>
+                <li>WebSocket 환경에서도 HTTP와 동일한 인증 체계 확보</li>
+                <li>인증 로직을 서버 중심으로 통합하여 향후 기능 확장에도 유연하게 대응 가능</li>
+              </ul>
             </div>
-
           </div>
         </article>
 
         <article class="trouble-card">
-          <h3>2. ElastiCache TLS 설정 불일치로 인한 Redis Timeout 및 서비스 중단 문제</h3>
+          <h3>2. Redis Timeout 발생 원인 추적 및 TLS 설정 불일치 해결</h3>
           <div class="problem-flow">
 
             <div>
               <strong>문제</strong><br>
-              배포 후 Django 기반 AI 기능이 정상 동작하지 않으며 서비스가 중단되었습니다. 
-              Redis 연결 시 타임아웃이 발생했지만, 즉시 예외가 발생하지 않고 로그가 남지 않아 
-              원인 파악이 어려운 상황이었습니다.
+              <ul>
+                <li>ECS 배포 후 AI 요약 기능 호출 시, 에러 로그 없이 요청이 중단되는 현상 발생</li>
+                <li>Redis 기반의 핵심 기능 불능으로 인해 서비스 전체의 사용자 흐름 단절</li>
+              </ul>
+            </div>
+
+            <div>
+              <strong>원인 추적</strong>
+              <ul>
+                <li>로그가 전무한 점에 착안, 애플리케이션 도달 전 '연결 단계'의 이슈로 판단</li>
+                <li>ECS 컨테이너 내부에서 직접 점검 수행</li>
+                <li>TCP 연결 테스트 → 정상 (네트워크 문제 배제)</li>
+                <li>redis-py PING 테스트 → timeout 발생</li>
+                <li>연결은 되지만 응답이 없는 상태 확인</li>
+              </ul>
             </div>
 
             <div>
               <strong>원인</strong><br>
-              AWS ElastiCache의 전송 중 암호화(TLS) 옵션이 활성화되어 있었으나, 
-              애플리케이션에서는 평문 Redis 연결을 사용하고 있었습니다. 
-              이로 인해 TCP 연결은 정상적으로 이루어졌지만, 실제 Redis 요청에서는 응답을 받지 못해 
-              timeout이 발생했습니다.
+              <ul>
+                <lu>ElastiCache Redis는 TLS 연결을 요구</lu>
+                <lu>애플리케이션은 평문(redis://)으로 접속</lu>
+                <lu>TCP 연결은 성공하지만 실제 요청은 처리되지 않아 timeout 발생했음을 확인</lu>
+              </ul>
             </div>
 
             <div>
               <strong>해결</strong><br>
-              ECS 컨테이너 내부에서 직접 테스트를 수행했습니다.<br>
-              1) TCP 연결은 정상임을 확인하여 네트워크 문제를 배제했습니다.<br>
-              2) Redis ping 테스트에서만 timeout이 발생하는 점을 통해 TLS 미적용 문제를 원인으로 특정했습니다.<br>
-              3) Redis 연결을 rediss:// 기반으로 변경하고, Redis.from_url()을 사용해 
-              환경별 설정을 통합했습니다.
+              <ul>
+                <li>Redis 연결을 rediss:// 기반으로 변경 및 SSL 옵션 적용</li>
+                <li>Redis.from_url()로 환경별 설정 통합</li>
+              </ul>
             </div>
 
             <div>
               <strong>결과</strong><br>
-              Redis 연결 문제를 해결하여 서비스 중단 현상을 복구했습니다. 
-              또한 타임아웃 설정을 명시적으로 추가해 예외가 즉시 기록되도록 개선하고, 
-              로컬/운영 환경을 모두 지원하는 구조로 정리해 재발 방지 기반을 마련했습니다.
+              <ul>
+                <li>Redis timeout 문제 해결 및 서비스 정상화</li>
+                <li>인프라 설정(TLS) 중요성을 파악하여 환경별 설정 차이로 인한 장애 재발 방지</li>
+              </ul>
             </div>
-
           </div>
         </article>
       </div>
